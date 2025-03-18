@@ -62,3 +62,67 @@ The request body should be a JSON object with the following fields:
     }
     ```
 *   **500 Internal Server Error:** An unexpected error occurred on the server.
+
+# `/users/login` Endpoint Documentation
+
+## Description
+
+This endpoint is used to log in an existing user. It requires the user's email and password to authenticate and provide a JWT token for subsequent authenticated requests.
+
+## Request
+
+*   **Method:** POST
+*   **Content-Type:** application/json
+
+## Required Data
+
+The request body should be a JSON object with the following fields:
+
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+*   `email`: User's email address (string). Must be a valid email format.
+*   `password`: User's password (string). Must be at least 5 characters long.
+
+## Response Status Codes
+
+*   **200 OK:** Successfully authenticated the user. The response body will contain a JWT token and user information.
+    ```json
+    {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGQzMzQzNjQ4NzkzNzQ4NzQ4NzRiNmUiLCJpYXQiOjE2OTIwMDM3NzAsImV4cCI6MTY5MjAwNzM3MH0.L9J4YCwmcwVnjJWVFMapJ07vM93m9_R9qWj8_z4-V44",
+        "user": {
+            "_id": "64d334364879374874874b6e",
+            "firstname": "test",
+            "lastname": "test",
+            "email": "test@example.com",
+            "createdAt": "2023-08-15T14:49:26.721Z",
+            "updatedAt": "2023-08-15T14:49:26.721Z",
+            "__v": 0
+        }
+    }
+    ```
+*   **400 Bad Request:** The request body is invalid, or required fields are missing. The response body will contain details about the validation errors.
+    ```json
+    {
+        "errors": [
+            {
+                "location": "body",
+                "msg": "Invalid value",
+                "path": "email",
+                "type": "field",
+                "value": "invalid-email"
+            }
+        ]
+    }
+    ```
+*   **401 Unauthorized:**  Occurs when the email and password do not match any existing user in the database
+    ```json
+    {
+        "message": "Invalid Credentials"
+    }
+    ```
+*   **500 Internal Server Error:** An unexpected error occurred on the server.
