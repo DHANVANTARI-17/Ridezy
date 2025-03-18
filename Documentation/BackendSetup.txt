@@ -1,0 +1,39 @@
+PS C:\Users\user\OneDrive\Documents\UBER_APP\backend>nnpm init ypm init -y
+Wrote to C:\Users\user\OneDrive\Documents\UBER_APP\bacC:\Users\user\AppData\Local\npm-cache\_logs\2025-03-16T10_55_45_805Z-debug-0.log      kend\package.json:
+
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
+
+
+pm i express
+
+added 69 packages, and audited 70 packages in 6s      
+
+14 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS C:\Users\user\OneDrive\Documents\UBER_APP\backend>npm i dotenv cors
+
+added 3 packages, and audited 73 packages in 2s       
+
+15 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS C:\Users\user\OneDrive\Documents\UBER_APP\backend> 
+
+
+
+// Setup database
+-->create folder db
+-->create db.js---> code for connection with mongodb database
+-->require that file in app.js and call function connectToDb()
