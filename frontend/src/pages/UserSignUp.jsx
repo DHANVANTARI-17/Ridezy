@@ -1,17 +1,25 @@
-import React from 'react'
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { UserDataContext } from '../context/UserContext'
 
 const UserSignUp = () => {
 
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName,  setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [userData, setUserData] = useState('');
-    const submitHandler = (e) => {
+    //const [userData, setUserData] = useState('');
+
+    const navigate = useNavigate();
+
+     const { user, setUser } = useContext(UserDataContext)
+
+
+    const submitHandler = async (e) => {
         e.preventDefault();
-        setUserData({
+        const newUser = {
             email: email,
             fullname: {
                 firstname: firstName,
@@ -19,10 +27,28 @@ const UserSignUp = () => {
             },
             password: password,
             
-        });
-        console.log('User Data:', userData);
+        }
+
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+        if(response.status == 201)
+        {
+          const data = response.data;
+          console.log('User Data:', data);
+          setUser(data.user);
+          localStorage.setItem('token', data.token);
+          navigate('/home');
+        }
+        else
+        {
+          console.error('Error creating user:', response.data);
+          alert('Error creating user. Please try again.');
+        }
+
+
         setEmail('');
         setPassword('');
+        setFirstName('');
+        setLastName('');
     };
   return (
       <div className="min-h-screen bg-[#f5f5f5] flex flex-col">
@@ -87,7 +113,7 @@ const UserSignUp = () => {
             className="bg-black text-white font-semibold py-2 px-4 rounded w-full mb-4"
             type="submit"
           >
-            Login
+            Create Account
           </button>
 
           <p className="text-center text-sm">
