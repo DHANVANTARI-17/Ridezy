@@ -2,12 +2,214 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import UserLogout from './UserLogout';
 import CaptainLogout from './CaptainLogout';
+//import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import 'remixicon/fonts/remixicon.css'
+import { useRef } from 'react';
+import LocationSearchPanel from '../components/LocationSearchPanel';
+import VehiclePanel from '../components/VehiclePanel';
+import ConfirmRidePanel from '../components/ConfirmRidePanel';
+import LookingForDriver from '../components/LookingForDriver';
+import WaitingForDriver from '../components/WaitingForDriver';
+// import LiveTracking from '../components/LiveTracking';
+
 const Home = () => {
+  const [ pickup, setPickup ] = useState('')
+    const [ destination, setDestination ] = useState('')
+    const [ panelOpen, setPanelOpen ] = useState(false)
+    const vehiclePanelRef = useRef(null)
+    const confirmRidePanelRef = useRef(null)
+    const vehicleFoundRef = useRef(null)
+    const waitingForDriverRef = useRef(null)
+    const panelRef = useRef(null)
+    const panelCloseRef = useRef(null)
+    const [ vehiclePanel, setVehiclePanel ] = useState(false)
+    const [ confirmRidePanel, setConfirmRidePanel ] = useState(false)
+    const [ vehicleFound, setVehicleFound ] = useState(false)
+     const [ waitingForDriver, setWaitingForDriver ] = useState(false)
+    // const [ pickupSuggestions, setPickupSuggestions ] = useState([])
+    // const [ destinationSuggestions, setDestinationSuggestions ] = useState([])
+    const [ activeField, setActiveField ] = useState(null)
+    // const [ fare, setFare ] = useState({})
+    // const [ vehicleType, setVehicleType ] = useState(null)
+    // const [ ride, setRide ] = useState(null)
+    // const navigate = useNavigate();
+
+
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+  }
+
+useGSAP(function(){
+    if(panelOpen){
+      gsap.to(panelRef.current, {
+      height: '70%',
+      padding: 20
+    })
+    gsap.to(panelCloseRef.current, {
+      opacity: 1
+    })
+    }
+    else
+    {
+      gsap.to(panelRef.current, {
+        height: '0%',
+        padding: 0
+      })
+      gsap.to(panelCloseRef.current, {
+        opacity: 0
+      })
+    }
+    
+  }, [panelOpen]);
+
+
+useGSAP(() => {
+  if (vehiclePanel) {
+    gsap.to(vehiclePanelRef.current, {
+      y: 0,
+    });
+  } else {
+    gsap.to(vehiclePanelRef.current, {
+      y: '100%', 
+    });
+  }
+}, [vehiclePanel]);
+
+
+useGSAP(() => {
+  if (confirmRidePanel) {
+    gsap.to(confirmRidePanelRef.current, {
+      y: 0,
+    });
+  } else {
+    gsap.to(confirmRidePanelRef.current, {
+      y: '100%',
+    });
+  }
+}, [confirmRidePanel]);
+
+
+useGSAP(() => {
+  if (vehicleFound) {
+    gsap.to(vehicleFoundRef.current, {
+      y: 0,
+    });
+  } else {
+    gsap.to(vehicleFoundRef.current, {
+      y: '100%',
+    });
+  }
+}, [vehicleFound]);
+
+useGSAP(() => {
+  if (waitingForDriver) {
+    gsap.to(waitingForDriverRef.current, {
+      y: 0,
+    });
+  }
+  else
+  {
+    gsap.to(waitingForDriverRef.current, {
+    y: '100%',
+    });
+  }
+}, [waitingForDriver]);
+
+  const handlePickupChange = (e) => {
+    setPickup(e.target.value);
+  }
+
+  const handleDestinationChange = (e) => {
+    setDestination(e.target.value);
+  }
+
   return (
-    <div className="h-screen flex justify-between flex-col w-full bg-red-400 bg-cover bg-center bg-[url(https://plus.unsplash.com/premium_photo-1731842686156-74895c29a87b?q=80&w=686&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]">
-      {/* <UserLogout /> */}
-      <CaptainLogout />
-    </div>
+    <div className='h-screen relative overflow-hidden'>
+            <img className='w-16 absolute left-5 top-5' src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="" />
+            <div className='h-screen w-screen'>
+                <img className="h-full w-full object-cover" src="https://i.pinimg.com/474x/ea/8c/5d/ea8c5d8fb7c702b38de6c66d5f37dc9c.jpg" alt="" />
+                {/* <LiveTracking /> */}
+            </div>
+            <div className=' flex flex-col justify-end h-screen absolute top-0 w-full'>
+                <div className='h-[30%] p-6 bg-white relative'>
+                    
+                    <h5 
+                      ref={panelCloseRef} 
+                      onClick={() => {
+                        setPanelOpen(false)
+                        }} 
+                      className='absolute opacity-0 right-6 top-6 text-xl text-black'>
+                      <i className="ri-arrow-down-wide-line"></i>
+                    </h5>
+
+                    <h4 className='text-xl font-semibold'>Find a trip</h4>
+                    <form className='relative py-2' onSubmit={(e) => {
+                        submitHandler(e)
+                    }}>
+                        <div className="line absolute h-16 w-1 top-[50%] -translate-y-1/2 left-5 bg-gray-700 rounded-full"></div>
+                        <input
+                            onClick={() => {
+                                setPanelOpen(true)
+                                setActiveField('pickup')
+                            }}
+                            value={pickup}
+                            onChange={handlePickupChange}
+                            className='bg-[#eee] px-10 py-2 text-base rounded-lg w-full'
+                            type="text"
+                            placeholder='Add a pick-up location'
+                        />
+                        <input
+                            onClick={() => {
+                                setPanelOpen(true)
+                                setActiveField('destination')
+                            }}
+                            value={destination}
+                            onChange={handleDestinationChange}
+                            className='bg-[#eee] px-10 py-2 text-base rounded-lg w-full  mt-3'
+                            type="text"
+                            placeholder='Enter your destination' />
+                    </form>
+                    {/* <button
+                        // onClick={findTrip}
+                        className='bg-black text-white px-4 py-2 rounded-lg mt-3 w-full'>
+                        Find Trip
+                    </button> */}
+                </div>
+                <div ref={panelRef} className='bg-white h-0'>
+                   <LocationSearchPanel setPanelOpen={setPanelOpen} setVehiclePanel={setVehiclePanel} />
+                </div>
+            </div>
+            <div ref={vehiclePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12'>
+                <VehiclePanel
+                  setVehiclePanel={setVehiclePanel}
+                  setPanelOpen={setPanelOpen}
+                  setConfirmRidePanel={setConfirmRidePanel}
+                />  
+            </div>
+            <div ref={confirmRidePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12'>
+                      <ConfirmRidePanel
+                       setVehicleFound={setVehicleFound}
+                       setConfirmRidePanel={setConfirmRidePanel}
+                      />
+            </div>
+             <div ref={vehicleFoundRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12'>
+                      <LookingForDriver
+                      setVehicleFound={setVehicleFound}
+                    
+                      />
+            </div>
+            <div ref={waitingForDriverRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12'>
+                      <WaitingForDriver
+                      setVehicleFound={setVehicleFound}
+                      setWaitingForDriver={setWaitingForDriver}
+                      waitingForDriver={waitingForDriver}
+                      />
+            </div>
+        </div>
   )
 }
 

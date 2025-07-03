@@ -1,8 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { UserDataContext } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { useEffect } from 'react'
 
 const UserProtectWrapper = ({
     children
@@ -32,7 +31,7 @@ const UserProtectWrapper = ({
                 localStorage.removeItem('token')
                 navigate('/userlogin')
             })
-    }, [navigate, setUser, token])
+    }, [ token ])
 
     if (isLoading) {
         return (
