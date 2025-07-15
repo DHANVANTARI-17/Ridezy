@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom'
 import { CaptainDataContext } from '../context/CaptainContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { useContext } from 'react'
+
 const CaptainSignup = () => {
 
   const navigate = useNavigate()
 
   const [ email, setEmail ] = useState('')
   const [ password, setPassword ] = useState('')
-  const [ firstname, setFirstName ] = useState('')
-  const [ lastname, setLastName ] = useState('')
+  const [ firstName, setFirstName ] = useState('')
+  const [ lastName, setLastName ] = useState('')
 
   const [ vehicleColor, setVehicleColor ] = useState('')
   const [ vehiclePlate, setVehiclePlate ] = useState('')
@@ -19,15 +19,15 @@ const CaptainSignup = () => {
   const [ vehicleType, setVehicleType ] = useState('')
 
 
-  const { captain, setCaptain } = useContext(CaptainDataContext)
+  const { captain, setCaptain } = React.useContext(CaptainDataContext)
 
 
   const submitHandler = async (e) => {
     e.preventDefault()
     const captainData = {
       fullname: {
-        firstname: firstname,
-        lastname: lastname
+        firstname: firstName,
+        lastname: lastName
       },
       email: email,
       password: password,
@@ -38,7 +38,7 @@ const CaptainSignup = () => {
         vehicleType: vehicleType
       }
     }
-    console.log(captainData)
+
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/register`, captainData)
 
     if (response.status === 201) {
@@ -74,7 +74,7 @@ const CaptainSignup = () => {
               className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border  text-lg placeholder:text-base'
               type="text"
               placeholder='First name'
-              value={firstname}
+              value={firstName}
               onChange={(e) => {
                 setFirstName(e.target.value)
               }}
@@ -84,7 +84,7 @@ const CaptainSignup = () => {
               className='bg-[#eeeeee] w-1/2  rounded-lg px-4 py-2 border  text-lg placeholder:text-base'
               type="text"
               placeholder='Last name'
-              value={lastname}
+              value={lastName}
               onChange={(e) => {
                 setLastName(e.target.value)
               }}
@@ -160,7 +160,7 @@ const CaptainSignup = () => {
               <option value="" disabled>Select Vehicle Type</option>
               <option value="car">Car</option>
               <option value="auto">Auto</option>
-              <option value="motorcycle">Motorcycle</option>
+              <option value="moto">Moto</option>
             </select>
           </div>
 
@@ -169,7 +169,7 @@ const CaptainSignup = () => {
           >Create Captain Account</button>
 
         </form>
-        <p className='text-center'>Already have a account? <Link to='/captainlogin' className='text-blue-600'>Login here</Link></p>
+        <p className='text-center'>Already have a account? <Link to='/captain-login' className='text-blue-600'>Login here</Link></p>
       </div>
       <div>
         <p className='text-[10px] mt-6 leading-tight'>This site is protected by reCAPTCHA and the <span className='underline'>Google Privacy

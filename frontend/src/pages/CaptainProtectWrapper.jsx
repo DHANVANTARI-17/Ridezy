@@ -17,7 +17,7 @@ const CaptainProtectWrapper = ({
 
     useEffect(() => {
         if (!token) {
-            navigate('/captainlogin')
+            navigate('/captain-login')
         }
 
         axios.get(`${import.meta.env.VITE_BASE_URL}/captains/profile`, {
@@ -33,7 +33,7 @@ const CaptainProtectWrapper = ({
             .catch(err => {
 
                 localStorage.removeItem('token')
-                navigate('/captainlogin')
+                navigate('/captain-login')
             })
     }, [ token ])
 
