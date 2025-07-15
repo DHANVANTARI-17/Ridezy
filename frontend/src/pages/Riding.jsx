@@ -1,22 +1,53 @@
 
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom' // Added useLocation
-import { useEffect, useContext } from 'react'
+import { useEffect, useContext, useState, useRef} from 'react'
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap'
 import { SocketContext } from '../context/SocketContext'
 import { useNavigate } from 'react-router-dom'
 import LiveTracking from '../components/LiveTracking'
+import {openRazorpayCheckout} from '../utils/payment'
+import RatingModal from "../components/RatingModal"; // import this
 
 const Riding = () => {
     const location = useLocation()
     const { ride } = location.state || {} // Retrieve ride data
     const { socket } = useContext(SocketContext)
     const navigate = useNavigate()
+    const [showRatingModal, setShowRatingModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const showModalref = useRef(null)
 
     socket.on("ride-ended", () => {
-        navigate('/home')
+        setShowRatingModal(true); 
     })
+    
+     useGSAP(() => {
+        if (showModal) {
+          gsap.to(showModalref.current, {
+            y: 0,
+          });
+        }
+        else
+        {
+          gsap.to(showModalref.current, {
+          y: '100%',
+          });
+        }
+      }, [showModalref]);
 
+    const submitHandler = async() => {
+        const proceed = window.confirm("Do you want to pay online via Razorpay?");
+  if (proceed && ride?.fare) {
+    await openRazorpayCheckout(ride.fare);
+  } else {
+    alert("You can pay in cash.");
+  }
 
+  // Show rating modal after payment (or cash confirmation)
+  setShowRatingModal(true);
+    }; 
     return (
         <div className='h-screen'>
             <Link to='/home' className='fixed right-2 top-2 h-10 w-10 bg-white flex items-center justify-center rounded-full'>
@@ -56,10 +87,27 @@ const Riding = () => {
                         </div>
                     </div>
                 </div>
-                <button className='w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg'>Make a Payment</button>
+                <button 
+                    onClick={submitHandler} 
+                    className='w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg'>
+                    Make a Payment
+                </button>
             </div>
+            {showRatingModal && (
+            <RatingModal
+                rideId={ride?._id}
+                driverId={ride?.captain?._id}
+                userId={ride?.user?._id}
+                onClose={() => {
+                setShowRatingModal(false);
+                navigate("/home");
+                }}
+            />
+            )}
         </div>
+        
     )
+    
 }
 
 export default Riding

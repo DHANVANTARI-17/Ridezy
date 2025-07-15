@@ -34,7 +34,7 @@ const Home = () => {
     const [ fare, setFare ] = useState({})
     const [ vehicleType, setVehicleType ] = useState(null)
     const [ ride, setRide ] = useState(null)
-    
+
     const navigate = useNavigate()
 
     const { socket } = useContext(SocketContext)
@@ -166,6 +166,7 @@ const Home = () => {
   }, [waitingForDriver]);
 
 
+
     async function findTrip() {
         setVehiclePanel(true)
         setPanelOpen(false)
@@ -193,7 +194,7 @@ const Home = () => {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-
+        
 
     }
 
@@ -205,14 +206,14 @@ const Home = () => {
                 <LiveTracking />
             </div>
             <div className=' flex flex-col justify-end h-screen absolute top-0 w-full'>
-                <div className='h-[30%] p-6 bg-white relative'>
+                <div className='h-[30%] p-3 bg-white relative'>
                     <h5 ref={panelCloseRef} onClick={() => {
                         setPanelOpen(false)
-                    }} className='absolute opacity-0 right-6 top-6 text-2xl'>
+                    }} className='absolute opacity-0 right-6 top-6 text-xl'>
                         <i className="ri-arrow-down-wide-line"></i>
                     </h5>
-                    <h4 className='text-2xl font-semibold'>Find a trip</h4>
-                    <form className='relative py-3' onSubmit={(e) => {
+                    <h4 className='text-xl font-semibold'>Find a trip</h4>
+                    <form className='relative py-2' onSubmit={(e) => {
                         submitHandler(e)
                     }}>
                         <div className="line absolute h-16 w-1 top-[50%] -translate-y-1/2 left-5 bg-gray-700 rounded-full"></div>

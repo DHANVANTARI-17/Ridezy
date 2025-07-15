@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import CaptainDetails from '../components/CaptainDetails'
@@ -50,7 +49,7 @@ const CaptainHome = () => {
     }, [])
 
     socket.on('new-ride', (data) => {
-        console.log(data)
+        console.log(data);
         setRide(data)
         setRidePopupPanel(true)
 
@@ -79,11 +78,11 @@ const CaptainHome = () => {
     useGSAP(function () {
         if (ridePopupPanel) {
             gsap.to(ridePopupPanelRef.current, {
-                transform: '0'
+                transform: 'translateY(0)'
             })
         } else {
             gsap.to(ridePopupPanelRef.current, {
-                transform: '100'
+                transform: 'translateY(100%)'
             })
         }
     }, [ ridePopupPanel ])
