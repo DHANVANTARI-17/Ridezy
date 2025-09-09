@@ -4,12 +4,12 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom';
 import UserContext from './context/UserContext.jsx';
-import CaptainContext from './context/CaptainContext.jsx';
+import AmbulanceContext from './context/AmbulanceContext.jsx';
 import SocketProvider from './context/SocketContext.jsx';
 
 createRoot(document.getElementById('root')).render(
 
-  <CaptainContext>
+  <AmbulanceContext>
     <UserContext>
       <SocketProvider>
         <BrowserRouter>
@@ -17,6 +17,6 @@ createRoot(document.getElementById('root')).render(
         </BrowserRouter>
       </SocketProvider>
     </UserContext>
-  </CaptainContext>
+  </AmbulanceContext>
 
 )

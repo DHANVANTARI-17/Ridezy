@@ -1,5 +1,5 @@
 const axios = require('axios');
-const captainModel = require('../models/captain.model');
+const ambulanceModel = require('../models/ambulance.model');
 
 module.exports.getAddressCoordinate = async (address) => {
     const apiKey = process.env.GOOGLE_MAPS_API;
@@ -20,6 +20,21 @@ module.exports.getAddressCoordinate = async (address) => {
         console.error(error);
         throw error;
     }
+}
+module.exports.getCurrentAddress = async (ltd, lng) => {
+    const apiKey = process.env.GOOGLE_MAPS_API;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${ltd},${lng}&key=${apiKey}`;     
+    try {
+        const response = await axios.get(url);
+        if (response.data.status === 'OK') {
+            return response.data.results[0].formatted_address;
+        } else {
+            throw new Error('Unable to fetch address');
+        }
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }       
 }
 
 module.exports.getDistanceTime = async (origin, destination) => {
@@ -78,7 +93,7 @@ module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
     // radius in km
 
 
-    const captains = await captainModel.find({
+    const ambulances = await ambulanceModel.find({
         location: {
             $geoWithin: {
                 $centerSphere: [ [ ltd, lng ], radius / 6371 ]
@@ -86,7 +101,7 @@ module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
         }
     });
 
-    return captains;
+    return ambulances;
 
 
 }

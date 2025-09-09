@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CaptainDataContext } from '../context/CaptainContext'
+import { AmbulanceDataContext } from '../context/AmbulanceContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -13,18 +13,15 @@ const CaptainSignup = () => {
   const [ firstName, setFirstName ] = useState('')
   const [ lastName, setLastName ] = useState('')
 
-  const [ vehicleColor, setVehicleColor ] = useState('')
   const [ vehiclePlate, setVehiclePlate ] = useState('')
-  const [ vehicleCapacity, setVehicleCapacity ] = useState('')
   const [ vehicleType, setVehicleType ] = useState('')
 
-
-  const { captain, setCaptain } = React.useContext(CaptainDataContext)
+  const { ambulance, setAmbulance } = React.useContext(AmbulanceDataContext)
 
 
   const submitHandler = async (e) => {
     e.preventDefault()
-    const captainData = {
+    const ambulanceData = {
       fullname: {
         firstname: firstName,
         lastname: lastName
@@ -32,18 +29,16 @@ const CaptainSignup = () => {
       email: email,
       password: password,
       vehicle: {
-        color: vehicleColor,
         plate: vehiclePlate,
-        capacity: vehicleCapacity,
         vehicleType: vehicleType
       }
     }
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captains/register`, captainData)
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/ambulances/register`, ambulanceData)
 
     if (response.status === 201) {
       const data = response.data
-      setCaptain(data.captain)
+      setAmbulance(data.ambulance)
       localStorage.setItem('token', data.token)
       navigate('/captain-home')
     }
@@ -52,9 +47,7 @@ const CaptainSignup = () => {
     setFirstName('')
     setLastName('')
     setPassword('')
-    setVehicleColor('')
     setVehiclePlate('')
-    setVehicleCapacity('')
     setVehicleType('')
 
   }
@@ -121,16 +114,6 @@ const CaptainSignup = () => {
               required
               className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base'
               type="text"
-              placeholder='Vehicle Color'
-              value={vehicleColor}
-              onChange={(e) => {
-                setVehicleColor(e.target.value)
-              }}
-            />
-            <input
-              required
-              className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base'
-              type="text"
               placeholder='Vehicle Plate'
               value={vehiclePlate}
               onChange={(e) => {
@@ -139,16 +122,6 @@ const CaptainSignup = () => {
             />
           </div>
           <div className='flex gap-4 mb-7'>
-            <input
-              required
-              className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base'
-              type="number"
-              placeholder='Vehicle Capacity'
-              value={vehicleCapacity}
-              onChange={(e) => {
-                setVehicleCapacity(e.target.value)
-              }}
-            />
             <select
               required
               className='bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base'
@@ -158,9 +131,7 @@ const CaptainSignup = () => {
               }}
             >
               <option value="" disabled>Select Vehicle Type</option>
-              <option value="car">Car</option>
-              <option value="auto">Auto</option>
-              <option value="moto">Moto</option>
+              <option value="ambulance">Ambulance</option>
             </select>
           </div>
 

@@ -8,7 +8,7 @@ const WaitingForDriver = (props) => {
       }}><i className="text-3xl text-gray-200 ri-arrow-down-wide-line"></i></h5>
 
       <div className='flex items-center justify-between'>
-        <img className='h-12' src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg" alt="" />
+        <img className='h-12' src="https://www.shutterstock.com/image-vector/ambulance-car-cartoon-style-kids-600nw-2403135027.jpg" alt="" />
         <div className='text-right'>
           <h2 className='text-lg font-medium capitalize'>{props.ride?.captain.fullname.firstname}</h2>
           <h4 className='text-xl font-semibold -mt-1 -mb-1'>{props.ride?.captain.vehicle.plate}</h4>
@@ -36,8 +36,8 @@ const WaitingForDriver = (props) => {
           <div className='flex items-center gap-5 p-3'>
             <i className="ri-currency-line"></i>
             <div>
-              <h3 className='text-lg font-medium'>₹{props.ride?.fare} </h3>
-              <p className='text-sm -mt-1 text-gray-600'>Cash Cash</p>
+              <h3 className='text-lg font-medium'>₹{props.ride?.EstimatedArrival} </h3>
+              <p className='text-sm -mt-1 text-gray-600'>minutes</p>
             </div>
           </div>
         </div>

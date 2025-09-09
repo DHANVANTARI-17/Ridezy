@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { getEstimatedArrival } = require('../controllers/ride.controller');
 
 
 const rideSchema = new mongoose.Schema({
@@ -19,7 +20,7 @@ const rideSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    fare: {
+    estimatedArrivalTime: {
         type: Number,
         required: true,
     },

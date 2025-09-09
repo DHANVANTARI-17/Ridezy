@@ -3,7 +3,7 @@ const userService = require('../services/user.service');
 const { validationResult } = require('express-validator');
 const blackListTokenModel = require('../models/blackListToken.model');
 
-module.exports.registerUser = async (req, res, next) => {
+module.exports.registerPatient = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -34,7 +34,7 @@ module.exports.registerUser = async (req, res, next) => {
 
 }
 
-module.exports.loginUser = async (req, res, next) => {
+module.exports.loginPatient = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const captainSchema = new mongoose.Schema({
+const ambulanceSchema = new mongoose.Schema({
     fullname: {
         firstname: {
             type: String,
@@ -39,25 +39,15 @@ const captainSchema = new mongoose.Schema({
     },
 
     vehicle: {
-        color: {
-            type: String,
-            required: true,
-            minlength: [ 3, 'Color must be at least 3 characters long' ],
-        },
         plate: {
             type: String,
             required: true,
             minlength: [ 3, 'Plate must be at least 3 characters long' ],
         },
-        capacity: {
-            type: Number,
-            required: true,
-            min: [ 1, 'Capacity must be at least 1' ],
-        },
         vehicleType: {
             type: String,
             required: true,
-            enum: [ 'car', 'motorcycle', 'auto' ],
+            enum: [ 'ambulance' ],
         }
     },
 
@@ -72,22 +62,22 @@ const captainSchema = new mongoose.Schema({
 })
 
 
-captainSchema.methods.generateAuthToken = function () {
+ambulanceSchema.methods.generateAuthToken = function () {
     const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
     return token;
 }
 
 
-captainSchema.methods.comparePassword = async function (password) {
+ambulanceSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 
 
-captainSchema.statics.hashPassword = async function (password) {
+ambulanceSchema.statics.hashPassword = async function (password) {
     return await bcrypt.hash(password, 10);
 }
 
-const captainModel = mongoose.model('captain', captainSchema)
+const ambulanceModel = mongoose.model('ambulance', ambulanceSchema)
 
 
-module.exports = captainModel;
+module.exports = ambulanceModel;

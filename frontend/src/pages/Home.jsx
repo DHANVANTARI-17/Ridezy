@@ -31,7 +31,7 @@ const Home = () => {
     const [ pickupSuggestions, setPickupSuggestions ] = useState([])
     const [ destinationSuggestions, setDestinationSuggestions ] = useState([])
     const [ activeField, setActiveField ] = useState(null)
-    const [ fare, setFare ] = useState({})
+    const [ estimatedArrivalTime, setEstimatedArrivalTime ] = useState()
     const [ vehicleType, setVehicleType ] = useState(null)
     const [ ride, setRide ] = useState(null)
 
@@ -171,15 +171,13 @@ const Home = () => {
         setVehiclePanel(true)
         setPanelOpen(false)
 
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/get-fare`, {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/rides/getEstimatedArrival`, {
             params: { pickup, destination },
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-
-
-        setFare(response.data)
+        setEstimatedArrivalTime(response.data)
 
 
     }
@@ -194,7 +192,7 @@ const Home = () => {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-        
+        console.log(response.data)
 
     }
 
@@ -259,14 +257,14 @@ const Home = () => {
             <div ref={vehiclePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12'>
                 <VehiclePanel
                     selectVehicle={setVehicleType}
-                    fare={fare} setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel} />
+                    estimatedArrivalTime={estimatedArrivalTime} setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel} />
             </div>
             <div ref={confirmRidePanelRef} className='fixed w-full z-10 bottom-0 translate-y-full bg-white px-3 py-6 pt-12'>
                 <ConfirmRide
                     createRide={createRide}
                     pickup={pickup}
                     destination={destination}
-                    fare={fare}
+                    estimatedArrivalTime={estimatedArrivalTime}
                     vehicleType={vehicleType}
 
                     setConfirmRidePanel={setConfirmRidePanel} setVehicleFound={setVehicleFound} />
@@ -276,7 +274,7 @@ const Home = () => {
                     createRide={createRide}
                     pickup={pickup}
                     destination={destination}
-                    fare={fare}
+                    estimatedArrivalTime={estimatedArrivalTime}
                     vehicleType={vehicleType}
                     setVehicleFound={setVehicleFound} />
             </div>

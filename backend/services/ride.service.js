@@ -1,115 +1,81 @@
 const rideModel = require('../models/ride.model');
 const mapService = require('./maps.service');
-const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-async function getFare(pickup, destination) {
-
+async function getEstimatedArrival(pickup, destination) {
     if (!pickup || !destination) {
-        throw new Error('Pickup and destination are required');
+        throw new Error('Pickup and destination locations are required');
     }
 
     const distanceTime = await mapService.getDistanceTime(pickup, destination);
+    const estimatedTime = Math.round(distanceTime.duration.value / 60);
 
-    const baseFare = {
-        auto: 30,
-        car: 50,
-        moto: 20
-    };
-
-    const perKmRate = {
-        auto: 10,
-        car: 15,
-        moto: 8
-    };
-
-    const perMinuteRate = {
-        auto: 2,
-        car: 3,
-        moto: 1.5
-    };
-
-
-
-    const fare = {
-        auto: Math.round(baseFare.auto + ((distanceTime.distance.value / 1000) * perKmRate.auto) + ((distanceTime.duration.value / 60) * perMinuteRate.auto)),
-        car: Math.round(baseFare.car + ((distanceTime.distance.value / 1000) * perKmRate.car) + ((distanceTime.duration.value / 60) * perMinuteRate.car)),
-        moto: Math.round(baseFare.moto + ((distanceTime.distance.value / 1000) * perKmRate.moto) + ((distanceTime.duration.value / 60) * perMinuteRate.moto))
-    };
-
-    return fare;
-
-
+    return estimatedTime;
 }
 
-module.exports.getFare = getFare;
+module.exports.getEstimatedArrival = getEstimatedArrival;
 
-
-function getOtp(num) {
-    function generateOtp(num) {
-        const otp = crypto.randomInt(Math.pow(10, num - 1), Math.pow(10, num)).toString();
-        return otp;
-    }
-    return generateOtp(num);
+function getVerificationCode(num) {
+    return crypto.randomInt(Math.pow(10, num - 1), Math.pow(10, num)).toString();
 }
 
-
-module.exports.createRide = async ({
-    user, pickup, destination, vehicleType
-}) => {
+module.exports.createRide = async ({ user, pickup, destination, vehicleType }) => {
     if (!user || !pickup || !destination || !vehicleType) {
         throw new Error('All fields are required');
     }
 
-    const fare = await getFare(pickup, destination);
+    const estimatedArrivalTime = await getEstimatedArrival(pickup, destination);
 
-
-
+    if (estimatedArrivalTime > 30) {
+        throw new Error('No ambulances available in your area');
+    }
     const ride = rideModel.create({
         user,
         pickup,
         destination,
-        otp: getOtp(6),
-        fare: fare[ vehicleType ]
+        otp: getVerificationCode(6),
+        estimatedArrivalTime
     })
 
-    return ride;
-}
+    return ride;        
+};
 
-module.exports.confirmRide = async ({
-    rideId, captain
-}) => {
+module.exports.confirmRide = async ({ rideId, ambulance }) => {
     if (!rideId) {
-        throw new Error('Ride id is required');
+        throw new Error('Ride ID is required');
     }
 
-    await rideModel.findOneAndUpdate({
-        _id: rideId
-    }, {
-        status: 'accepted',
-        captain: captain._id
-    })
+    await rideModel.findOneAndUpdate(
+        { _id: rideId },
+        {
+            status: 'accepted',
+            captain: ambulance._id, 
+        }
+    );
 
-    const ride = await rideModel.findOne({
-        _id: rideId
-    }).populate('user').populate('captain').select('+otp');
+    const ride = await rideModel
+        .findOne({ _id: rideId })
+        .populate('user')
+        .populate('captain')
+        .select('+otp');
 
     if (!ride) {
         throw new Error('Ride not found');
     }
 
     return ride;
+};
 
-}
-
-module.exports.startRide = async ({ rideId, otp, captain }) => {
-    if (!rideId || !otp) {
-        throw new Error('Ride id and OTP are required');
+module.exports.startRide = async ({ rideId, verificationCode, ambulance }) => {
+    if (!rideId || !verificationCode) {
+        throw new Error('Ride ID and Patient Verification Code are required');
     }
 
-    const ride = await rideModel.findOne({
-        _id: rideId
-    }).populate('user').populate('captain').select('+otp');
+    const ride = await rideModel
+        .findOne({ _id: rideId })
+        .populate('user')
+        .populate('captain')
+        .select('+otp');
 
     if (!ride) {
         throw new Error('Ride not found');
@@ -119,28 +85,29 @@ module.exports.startRide = async ({ rideId, otp, captain }) => {
         throw new Error('Ride not accepted');
     }
 
-    if (ride.otp !== otp) {
-        throw new Error('Invalid OTP');
+    if (ride.otp !== verificationCode) {
+        throw new Error('Invalid Patient Verification Code');
     }
 
-    await rideModel.findOneAndUpdate({
-        _id: rideId
-    }, {
-        status: 'ongoing'
-    })
+    await rideModel.findOneAndUpdate(
+        { _id: rideId },
+        { status: 'ongoing' }
+    );
 
     return ride;
-}
+};
 
-module.exports.endRide = async ({ rideId, captain }) => {
+// End an ambulance ride
+module.exports.endRide = async ({ rideId, ambulance }) => {
     if (!rideId) {
-        throw new Error('Ride id is required');
+        throw new Error('Ride ID is required');
     }
 
-    const ride = await rideModel.findOne({
-        _id: rideId,
-        captain: captain._id
-    }).populate('user').populate('captain').select('+otp');
+    const ride = await rideModel
+        .findOne({ _id: rideId, captain: ambulance._id })
+        .populate('user')
+        .populate('captain')
+        .select('+otp');
 
     if (!ride) {
         throw new Error('Ride not found');
@@ -150,11 +117,10 @@ module.exports.endRide = async ({ rideId, captain }) => {
         throw new Error('Ride not ongoing');
     }
 
-    await rideModel.findOneAndUpdate({
-        _id: rideId
-    }, {
-        status: 'completed'
-    })
+    await rideModel.findOneAndUpdate(
+        { _id: rideId },
+        { status: 'completed' }
+    );
 
     return ride;
-}
+};

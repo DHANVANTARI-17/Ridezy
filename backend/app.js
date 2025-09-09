@@ -1,4 +1,3 @@
-
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
@@ -7,10 +6,9 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const connectToDb = require('./db/db');
 const userRoutes = require('./routes/user.routes');
-const captainRoutes = require('./routes/captain.routes');
+const ambulanceRoute = require('./routes/ambulance.routes');
 const mapsRoutes = require('./routes/maps.routes');
 const rideRoutes = require('./routes/ride.routes');
-const payment = require('./routes/payment.route')
 const rating =  require("./routes/rating.route")
 connectToDb();
 
@@ -26,12 +24,10 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', userRoutes);
-app.use('/captains', captainRoutes);
+app.use('/ambulances', ambulanceRoute);
 app.use('/maps', mapsRoutes);
 app.use('/rides', rideRoutes);
-app.use('/payment', payment)
-app.use('/ratings', rating)
-
+app.use('/ratings', rating);
 
 
 module.exports = app;

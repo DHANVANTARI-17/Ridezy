@@ -8,7 +8,7 @@ const ConfirmRidePanel = (props) => {
             <h3 className='text-xl font-semibold mb-5'>Confirm your Ride</h3>
 
             <div className='flex gap-2 justify-between flex-col items-center'>
-                <img className='h-20' src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg" alt="" />
+                <img className='h-20' src="https://www.shutterstock.com/image-vector/ambulance-car-cartoon-style-kids-600nw-2403135027.jpg" alt="" />
                 <div className='w-full mb-2'>
                     <div className='flex items-center gap-5 p-3 border-b-2'>
                         <i className="ri-map-pin-user-fill"></i>
@@ -27,8 +27,7 @@ const ConfirmRidePanel = (props) => {
                     <div className='flex items-center gap-5 p-3'>
                         <i className="ri-currency-line"></i>
                         <div>
-                            <h3 className='text-sm font-semibold'>₹{props.fare[ props.vehicleType ]}</h3>
-                            <p className='text-xs -mt-1 text-gray-600'>Cash Cash</p>
+                            <h3 className='text-sm font-semibold'>Estimated Arrival Time: {props.estimatedArrivalTime} minutes</h3>
                         </div>
                     </div>
                     <div>

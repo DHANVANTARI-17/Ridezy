@@ -1,21 +1,19 @@
 
 import React, { useContext } from 'react'
-import { CaptainDataContext } from '../context/CaptainContext'
+import { AmbulanceDataContext } from '../context/AmbulanceContext'
 
-const CaptainDetails = () => {
+const AmbulanceDetails = () => {
 
-    const { captain } = useContext(CaptainDataContext)
-
+    const { ambulance } = useContext(AmbulanceDataContext)
+    if (!ambulance || !ambulance.fullname) {
+        return <p>Loading ambulance details...</p>;
+    }
     return (
         <div>
             <div className='flex items-center justify-between'>
                 <div className='flex items-center justify-start gap-3'>
                     <img className='h-10 w-10 rounded-full object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdlMd7stpWUCmjpfRjUsQ72xSWikidbgaI1w&s" alt="" />
-                    <h4 className='text-lg font-medium capitalize'>{captain.fullname.firstname + " " + captain.fullname.lastname}</h4>
-                </div>
-                <div>
-                    <h4 className='text-xl font-semibold'>₹295.20</h4>
-                    <p className='text-sm text-gray-600'>Earned</p>
+                    <h4 className='text-lg font-medium capitalize'>{ambulance.fullname.firstname + " " + ambulance.fullname.lastname}</h4>
                 </div>
             </div>
             <div className='flex p-3 mt-8 bg-gray-100 rounded-xl justify-center gap-5 items-start'>
@@ -40,4 +38,4 @@ const CaptainDetails = () => {
     )
 }
 
-export default CaptainDetails
+export default AmbulanceDetails
