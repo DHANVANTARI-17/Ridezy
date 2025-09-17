@@ -1,4 +1,5 @@
-# 🚑 Ambulance Booking System
+# 🚑 Aarogya Cabs
+
 
 This project is an Ambulance Booking System that allows users to book ambulances, notifies ambulances within a 10km radius, and manages ride workflows. The system is built using **React**, **Node.js**, **Express**, **MongoDB**, and **Socket.io** for real-time communication. Payment integration is also enabled for ride payments.
 
